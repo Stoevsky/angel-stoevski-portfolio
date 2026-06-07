@@ -12,3 +12,4 @@ out/
 .agents/
 .claude/
 .codex/
+.vercel
