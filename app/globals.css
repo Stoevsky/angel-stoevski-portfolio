@@ -143,7 +143,6 @@ button {
   -webkit-backdrop-filter: blur(18px) saturate(108%);
   backdrop-filter: blur(18px) saturate(108%);
   backface-visibility: hidden;
-  contain: paint;
   transform:
     translate3d(var(--scene-mx), var(--scene-my), 0)
     rotateX(var(--scene-rx))
@@ -306,7 +305,7 @@ button {
 .profile-stage {
   display: grid;
   min-height: 100%;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.76fr);
   gap: 24px;
   align-items: center;
 }

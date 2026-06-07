@@ -29,6 +29,29 @@ const tabs: Tab[] = [
   { id: "press", label: "Press" },
 ];
 
+const projects = [
+  {
+    name: "Footly",
+    role: "Founder & CEO",
+    url: "https://tryfootly.app",
+    icon: "/footly-logo.png",
+    iconAlt: "Footly logo",
+    description:
+      "AI soccer training app for players who want personalized training, analysis, and improvement systems.",
+    metric: "$10k MRR within around 1.5 months.",
+  },
+  {
+    name: "Locked",
+    role: "Co-Founder",
+    url: "https://trylocked.app",
+    icon: "/locked-icon.webp",
+    iconAlt: "Locked app icon",
+    description:
+      "Self-improvement app for discipline, consistency, and personal performance.",
+    metric: "$15k MRR within 2 months.",
+  },
+];
+
 const personalLinks: LinkItem[] = [
   { label: "X / Twitter", href: "https://x.com/stoevent", icon: "x" },
   {
@@ -356,6 +379,15 @@ function AboutTab() {
           reached $10k MRR within around a month and a half.
         </p>
       </section>
+
+      <section className="project-showcase" aria-label="Current apps">
+        <p className="project-section-label">Current apps</p>
+        <div className="project-stack">
+          {projects.map((project) => (
+            <ProjectCard key={project.name} {...project} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
@@ -403,6 +435,49 @@ function PressTab() {
         </div>
       </section>
     </div>
+  );
+}
+
+function ProjectCard({
+  name,
+  role,
+  url,
+  icon,
+  iconAlt,
+  description,
+  metric,
+}: {
+  name: string;
+  role: string;
+  url: string;
+  icon: string;
+  iconAlt: string;
+  description: string;
+  metric: string;
+}) {
+  return (
+    <article className="project-card tilt-card">
+      <div className="flex items-start justify-between gap-4">
+        <div className="project-heading">
+          <img src={icon} alt={iconAlt} className="project-icon" />
+          <div>
+            <p>{role}</p>
+            <h3>{name}</h3>
+          </div>
+        </div>
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`Open ${name} website`}
+          className="project-link"
+        >
+          <ExternalIcon />
+        </a>
+      </div>
+      <p className="project-description">{description}</p>
+      <p className="project-metric">{metric}</p>
+    </article>
   );
 }
 
