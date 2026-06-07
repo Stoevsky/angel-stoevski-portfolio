@@ -29,29 +29,6 @@ const tabs: Tab[] = [
   { id: "press", label: "Press" },
 ];
 
-const projects = [
-  {
-    name: "Footly",
-    role: "Founder & CEO",
-    url: "https://tryfootly.com",
-    icon: "/footly-logo.png",
-    iconAlt: "Footly logo",
-    description:
-      "AI soccer training app for players who want personalized training, analysis, and improvement systems.",
-    metric: "$10k MRR within around 1.5 months.",
-  },
-  {
-    name: "Locked",
-    role: "Co-Founder",
-    url: "https://trylocked.app",
-    icon: "/locked-icon.webp",
-    iconAlt: "Locked app icon",
-    description:
-      "Self-improvement app for discipline, consistency, and personal performance.",
-    metric: "$15k MRR within 2 months.",
-  },
-];
-
 const personalLinks: LinkItem[] = [
   { label: "X / Twitter", href: "https://x.com/stoevent", icon: "x" },
   {
@@ -72,7 +49,7 @@ const appLinks = [
   {
     group: "Footly",
     links: [
-      { label: "Website", href: "https://tryfootly.com", icon: "footly" },
+      { label: "Website", href: "https://tryfootly.app", icon: "footly" },
       {
         label: "Instagram",
         href: "https://www.instagram.com/footlyapp/",
@@ -114,24 +91,30 @@ export default function Home() {
 
 function AppShell({ children }: { children: ReactNode }) {
   const shellRef = useRef<HTMLDivElement | null>(null);
+  const frameRef = useRef<number | null>(null);
 
   function handlePointerMove(event: PointerEvent<HTMLElement>) {
     const shell = shellRef.current;
 
-    if (!shell || event.pointerType === "touch") {
+    if (!shell || event.pointerType === "touch" || frameRef.current !== null) {
       return;
     }
 
-    const rect = shell.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    const { clientX, clientY } = event;
 
-    shell.style.setProperty("--scene-rx", `${(-y * 5).toFixed(2)}deg`);
-    shell.style.setProperty("--scene-ry", `${(x * 7).toFixed(2)}deg`);
-    shell.style.setProperty("--scene-mx", `${(x * 18).toFixed(2)}px`);
-    shell.style.setProperty("--scene-my", `${(y * 14).toFixed(2)}px`);
-    shell.style.setProperty("--cursor-x", `${event.clientX - rect.left}px`);
-    shell.style.setProperty("--cursor-y", `${event.clientY - rect.top}px`);
+    frameRef.current = window.requestAnimationFrame(() => {
+      const rect = shell.getBoundingClientRect();
+      const x = (clientX - rect.left) / rect.width - 0.5;
+      const y = (clientY - rect.top) / rect.height - 0.5;
+
+      shell.style.setProperty("--scene-rx", `${(-y * 3).toFixed(2)}deg`);
+      shell.style.setProperty("--scene-ry", `${(x * 4).toFixed(2)}deg`);
+      shell.style.setProperty("--scene-mx", `${(x * 8).toFixed(2)}px`);
+      shell.style.setProperty("--scene-my", `${(y * 6).toFixed(2)}px`);
+      shell.style.setProperty("--cursor-x", `${clientX - rect.left}px`);
+      shell.style.setProperty("--cursor-y", `${clientY - rect.top}px`);
+      frameRef.current = null;
+    });
   }
 
   function handlePointerLeave() {
@@ -260,33 +243,28 @@ function Tabs({
 }) {
   const activeIndex = tabs.findIndex((tab) => tab.id === activeTab);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const tabFrameRef = useRef<number | null>(null);
   const indicatorIndex = previewIndex ?? activeIndex;
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "touch") {
+    if (event.pointerType === "touch" || tabFrameRef.current !== null) {
       return;
     }
 
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    const target = event.currentTarget;
+    const { clientX, clientY } = event;
 
-    event.currentTarget.style.setProperty(
-      "--tab-rx",
-      `${(-y * 4).toFixed(2)}deg`,
-    );
-    event.currentTarget.style.setProperty(
-      "--tab-ry",
-      `${(x * 5).toFixed(2)}deg`,
-    );
-    event.currentTarget.style.setProperty(
-      "--tab-glow-x",
-      `${event.clientX - rect.left}px`,
-    );
-    event.currentTarget.style.setProperty(
-      "--tab-glow-y",
-      `${event.clientY - rect.top}px`,
-    );
+    tabFrameRef.current = window.requestAnimationFrame(() => {
+      const rect = target.getBoundingClientRect();
+      const x = (clientX - rect.left) / rect.width - 0.5;
+      const y = (clientY - rect.top) / rect.height - 0.5;
+
+      target.style.setProperty("--tab-rx", `${(-y * 2).toFixed(2)}deg`);
+      target.style.setProperty("--tab-ry", `${(x * 3).toFixed(2)}deg`);
+      target.style.setProperty("--tab-glow-x", `${clientX - rect.left}px`);
+      target.style.setProperty("--tab-glow-y", `${clientY - rect.top}px`);
+      tabFrameRef.current = null;
+    });
   }
 
   function handlePointerLeave(event: PointerEvent<HTMLDivElement>) {
@@ -378,15 +356,6 @@ function AboutTab() {
           reached $10k MRR within around a month and a half.
         </p>
       </section>
-
-      <section className="project-showcase" aria-label="Projects">
-        <p className="project-section-label">Current apps</p>
-        <div className="project-stack">
-          {projects.map((project) => (
-            <ProjectCard key={project.name} {...project} />
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
@@ -434,51 +403,6 @@ function PressTab() {
         </div>
       </section>
     </div>
-  );
-}
-
-function ProjectCard({
-  name,
-  role,
-  url,
-  icon,
-  iconAlt,
-  description,
-  metric,
-}: {
-  name: string;
-  role: string;
-  url: string;
-  icon: string;
-  iconAlt: string;
-  description: string;
-  metric: string;
-}) {
-  return (
-    <article className="project-card tilt-card">
-      <div className="flex items-start justify-between gap-4">
-        <div className="project-heading">
-          <img src={icon} alt={iconAlt} className="project-icon" />
-          <div>
-            <p>{role}</p>
-            <h3>{name}</h3>
-          </div>
-        </div>
-        <a
-          href={url}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={`Open ${name} website`}
-          className="project-link"
-        >
-          <ExternalIcon />
-        </a>
-      </div>
-      <p className="project-description">{description}</p>
-      <p className="project-metric">
-        {metric}
-      </p>
-    </article>
   );
 }
 
@@ -547,16 +471,6 @@ function ProofCard({
     <article className="proof-card tilt-card">
       {content}
     </article>
-  );
-}
-
-function TimelineItem({ children }: { children: ReactNode }) {
-  return (
-    <div className="mt-4 border-l-2 border-primary pl-4">
-      <p className="max-w-3xl text-sm leading-7 text-muted sm:text-base">
-        {children}
-      </p>
-    </div>
   );
 }
 

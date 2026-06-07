@@ -15,8 +15,9 @@
 
 :root {
   color-scheme: light;
-  --shadow-layer: 0 26px 72px rgb(17 24 39 / 0.18);
-  --shadow-soft: 0 12px 34px rgb(17 24 39 / 0.12);
+  --glass-fill: rgb(150 153 149 / 0.28);
+  --shadow-layer: 0 18px 44px rgb(17 24 39 / 0.16);
+  --shadow-soft: 0 10px 24px rgb(17 24 39 / 0.12);
   --scene-rx: 0deg;
   --scene-ry: 0deg;
   --scene-mx: 0px;
@@ -64,9 +65,7 @@ button {
 
 .portfolio-screen {
   position: relative;
-  background:
-    radial-gradient(circle at 50% -10%, rgb(255 255 255 / 0.34), transparent 34rem),
-    linear-gradient(135deg, #706f6b 0%, #a6aaa4 52%, #77776f 100%);
+  background: #8f918d;
   isolation: isolate;
 }
 
@@ -80,7 +79,6 @@ button {
     linear-gradient(120deg, transparent 0 52%, rgb(17 24 39 / 0.18) 53% 54%, transparent 55%),
     radial-gradient(circle at 18% 62%, rgb(255 255 255 / 0.08), transparent 20rem),
     radial-gradient(circle at 82% 38%, rgb(17 24 39 / 0.22), transparent 22rem);
-  filter: blur(26px);
   transform: scale(1.05);
 }
 
@@ -112,7 +110,6 @@ button {
   border: 1px solid rgb(255 255 255 / 0.28);
   background: rgb(255 255 255 / 0.18);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
-  filter: blur(1px);
 }
 
 .ambient-plane-left {
@@ -138,33 +135,27 @@ button {
   margin: 0 auto;
   border: 1px solid rgb(255 255 255 / 0.32);
   border-radius: 30px;
-  background:
-    linear-gradient(90deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.07) 50%, rgb(255 255 255 / 0.13)),
-    rgb(104 104 100 / 0.42);
+  background: var(--glass-fill);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.34),
     inset 0 -1px 0 rgb(17 24 39 / 0.08),
-    0 44px 110px rgb(17 24 39 / 0.42);
-  -webkit-backdrop-filter: blur(46px) saturate(116%);
-  backdrop-filter: blur(46px) saturate(116%);
+    0 26px 58px rgb(17 24 39 / 0.34);
+  -webkit-backdrop-filter: blur(18px) saturate(108%);
+  backdrop-filter: blur(18px) saturate(108%);
+  backface-visibility: hidden;
+  contain: paint;
   transform:
     translate3d(var(--scene-mx), var(--scene-my), 0)
     rotateX(var(--scene-rx))
     rotateY(var(--scene-ry));
   transform-style: preserve-3d;
   transition:
-    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 260ms ease;
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
 }
 
 .scene-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 50%;
-  border-radius: 30px 0 0 30px;
-  background: rgb(17 24 39 / 0.13);
-  pointer-events: none;
+  content: none;
 }
 
 .scene-sheen {
@@ -195,11 +186,10 @@ button {
   position: relative;
   border: 1px solid rgb(255 255 255 / 0.34);
   border-radius: 18px;
-  background:
-    linear-gradient(135deg, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0.12)),
-    rgb(255 255 255 / 0.2);
+  background: var(--glass-fill);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(20px) saturate(112%);
+  backdrop-filter: blur(12px) saturate(108%);
+  contain: paint;
   transform-style: preserve-3d;
 }
 
@@ -238,8 +228,8 @@ button {
   transform: rotateX(var(--tab-rx)) rotateY(var(--tab-ry));
   transform-style: preserve-3d;
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease;
+    transform 180ms ease;
+  will-change: transform;
 }
 
 .depth-tab-indicator {
@@ -257,7 +247,9 @@ button {
   transform: translateZ(10px);
   transition:
     left 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    width 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: left, transform;
 }
 
 .depth-tabs[data-index="1"] .depth-tab-indicator {
@@ -294,15 +286,15 @@ button {
 }
 
 .tilt-card {
+  backface-visibility: hidden;
   transition:
     transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 180ms ease,
     border-color 180ms ease;
+  will-change: transform;
 }
 
 .tilt-card:hover {
   border-color: rgb(255 255 255 / 0.58);
-  box-shadow: var(--shadow-layer);
   transform: translateY(-6px) rotateX(2deg) rotateY(-2deg) translateZ(28px);
 }
 
@@ -314,7 +306,7 @@ button {
 .profile-stage {
   display: grid;
   min-height: 100%;
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.76fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 24px;
   align-items: center;
 }
@@ -390,12 +382,13 @@ button {
 .proof-card {
   border: 1px solid rgb(255 255 255 / 0.28);
   border-radius: 20px;
-  background: rgb(255 255 255 / 0.16);
+  background: var(--glass-fill);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.18),
-    0 18px 42px rgb(17 24 39 / 0.16);
-  -webkit-backdrop-filter: blur(34px) saturate(112%);
-  backdrop-filter: blur(34px) saturate(112%);
+    0 12px 26px rgb(17 24 39 / 0.14);
+  -webkit-backdrop-filter: blur(12px) saturate(108%);
+  backdrop-filter: blur(12px) saturate(108%);
+  contain: paint;
 }
 
 .identity-card {
@@ -720,6 +713,8 @@ button {
   --panel-ry: -4deg;
   animation: panel-enter 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
   transform-origin: 50% 48%;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
 }
 
 .tab-panel[data-direction="back"] {
@@ -730,7 +725,6 @@ button {
 @keyframes panel-enter {
   from {
     opacity: 0;
-    filter: blur(12px);
     transform:
       translate3d(var(--panel-x), 12px, -28px)
       rotateY(var(--panel-ry))
@@ -738,7 +732,6 @@ button {
   }
   to {
     opacity: 1;
-    filter: blur(0);
     transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
   }
 }
@@ -770,12 +763,10 @@ button {
 @keyframes content-rise {
   from {
     opacity: 0;
-    filter: blur(8px);
     transform: translate3d(0, 16px, -16px) scale(0.99);
   }
   to {
     opacity: 1;
-    filter: blur(0);
     transform: translate3d(0, 0, 0) scale(1);
   }
 }
@@ -792,9 +783,7 @@ button {
   }
 
   .scene-shell::before {
-    width: 100%;
-    border-radius: inherit;
-    background: rgb(255 255 255 / 0.06);
+    content: none;
   }
 
   .depth-tabs {
